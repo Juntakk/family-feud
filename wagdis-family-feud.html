@@ -108,42 +108,82 @@ body{
   box-shadow:0 0 0 3px #6a4400, 0 0 38px rgba(255,150,30,.55), inset 0 0 28px #00031f;
   padding:2.4% 3%;z-index:6;
 }
-/* answer board — ALWAYS a fixed 5×2 grid (10 tiles, uniform size) */
+/* answer board — 2 columns, rows set dynamically via JS */
 .board{
   width:100%;height:100%;
   display:grid;grid-auto-flow:column;
-  grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,1fr);
-  gap:2.4% 5%;
+  grid-template-columns:1fr 1fr;
+  gap:3% 5%;
 }
 
-/* tile flip card */
+/* ---- Real Family Feud tile look ---- */
 .tile{position:relative;min-height:0;perspective:1200px;cursor:default;}
-.tile.empty{opacity:.8;}
-.tile.empty .front{color:transparent;}
 .board.host-armed .tile:not(.revealed):not(.empty){cursor:pointer;}
 .tile-inner{position:absolute;inset:0;transform-style:preserve-3d;
   transition:transform .6s ease;}
 .tile.revealed .tile-inner{transform:rotateY(180deg);}
+
+/* shared face — double-border frame (dark outer, white inner) */
 .face{
-  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border:2.5px solid #ecbd3e;border-radius:8px;
-  background:linear-gradient(165deg,#203bbf 0%,#10218a 50%,#0b1668 100%);
-  box-shadow:inset 0 2px 7px rgba(130,160,255,.30),inset 0 0 18px #00031f,
-             0 0 10px rgba(255,150,30,.25);
-  display:flex;align-items:center;justify-content:center;overflow:hidden;
-}
-.face.front{font-family:'Bebas Neue',sans-serif;color:var(--gold-bright);
-  font-size:clamp(28px,5vh,56px);text-shadow:0 0 14px rgba(var(--amber-glow),.8);}
-.face.back{transform:rotateY(180deg);justify-content:space-between;padding:0 4%;}
-.ans-text{font-family:'Bebas Neue',sans-serif;color:#fff;
-  font-size:clamp(16px,3vh,30px);letter-spacing:1px;line-height:1;
-  text-shadow:0 0 8px #6fa8ff;flex:1;text-align:left;padding-left:6px;}
-.ans-pts{font-family:'Bebas Neue',sans-serif;color:#001034;
-  background:linear-gradient(var(--gold-bright),var(--gold));
-  min-width:54px;height:58%;border-radius:8px;
+  position:absolute;inset:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:7px;overflow:hidden;
   display:flex;align-items:center;justify-content:center;
-  font-size:clamp(20px,3.4vh,34px);padding:0 10px;
-  box-shadow:0 0 10px rgba(var(--amber-glow),.7);}
+  /* dark outer border */
+  border:3px solid #1a1a2e;
+  /* white inner border via outline */
+  outline:2px solid rgba(255,255,255,.75);
+  outline-offset:-5px;
+}
+
+/* FRONT — bright blue gradient, number inside a dark oval */
+.face.front{
+  background:linear-gradient(180deg,
+    #6a9eea 0%,
+    #4878d8 18%,
+    #3562cc 40%,
+    #2750bb 65%,
+    #1e3fa8 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 3px 8px rgba(0,0,0,.5);
+}
+/* oval number badge */
+.num-oval {
+  width: 13%;
+  aspect-ratio: 2.2 / 1;
+  background: linear-gradient(180deg, #172060 0%, #0d1545 100%);
+  border-radius: 50% / 50%;
+  border: 2.5px solid rgba(255, 255, 255, .7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(18px,3.2vh,38px);
+  color:#fff;
+  text-shadow:0 2px 4px rgba(0,0,0,.8);
+  letter-spacing:1px;
+}
+
+/* BACK — revealed */
+.face.back{
+  transform:rotateY(180deg);
+  background:linear-gradient(180deg,
+    #4878d8 0%,#2750bb 40%,#1a3899 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25), 0 3px 8px rgba(0,0,0,.5);
+  justify-content:space-between;
+  padding:0 5%;
+}
+.ans-text{font-family:'Bebas Neue',sans-serif;color:#fff;
+  font-size:clamp(12px,2.2vh,24px);letter-spacing:.5px;line-height:1;
+  flex:1;text-align:left;text-shadow:0 1px 4px rgba(0,0,0,.7);}
+.ans-pts{font-family:'Bebas Neue',sans-serif;color:#001034;
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+  min-width:46px;height:56%;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(15px,2.6vh,28px);padding:0 8px;
+  box-shadow:0 0 8px rgba(var(--amber-glow),.6);}
 
 /* ============================== TITLE BADGE ============================== */
 .badge{
@@ -283,6 +323,8 @@ body{
 /* ============================== SCREENS ============================== */
 .screen{position:fixed;inset:0;z-index:200;display:none;
   flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+/* hide the warm floor glow while a screen overlay is showing */
+body.screen-open .floor{opacity:0;}
 .screen.active{display:flex;}
 .start-title{font-family:'Bebas Neue';margin-bottom:8px;}
 .start-title .w{font-size:clamp(54px,11vh,120px);color:var(--gold-bright);line-height:.85;
@@ -292,10 +334,10 @@ body{
 .play-btn{font-family:'Bebas Neue';font-size:clamp(30px,5vh,52px);letter-spacing:3px;
   padding:16px 70px;border:none;border-radius:16px;cursor:pointer;color:#1a0f00;
   background:linear-gradient(180deg,var(--gold-bright),var(--gold));
-  box-shadow:0 0 30px rgba(var(--amber-glow),.7),0 6px 0 #7a5300;
+  box-shadow:0 6px 0 #7a5300;
   transition:transform .12s,filter .15s;}
 .play-btn:hover{filter:brightness(1.08);}
-.play-btn:active{transform:translateY(4px);box-shadow:0 0 30px rgba(var(--amber-glow),.7),0 2px 0 #7a5300;}
+.play-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #7a5300;}
 
 /* end screen */
 #endScreen .winner-label{font-family:'Bebas Neue';font-size:26px;letter-spacing:5px;color:#9fb6ff;}
@@ -538,21 +580,21 @@ function buildBoard(){
   const board=$("board");
   board.innerHTML="";
   const ans=cur().answers;
-  // ALWAYS 10 slots — column-major fill (1-5 left, 6-10 right).
-  // Slots without a provided answer are inert placeholders.
+  board.style.gridTemplateRows="repeat(5,1fr)";   // always 5 rows
   for(let i=0;i<10;i++){
     const a=ans[i];
     const tile=document.createElement("div");
+    tile.dataset.i=i;
     if(a){
       tile.className="tile";
-      tile.dataset.i=i;
       tile.innerHTML=
         '<div class="tile-inner">'+
-          '<div class="face front">'+(i+1)+'</div>'+
+          '<div class="face front"><div class="num-oval"><span class="num">'+(i+1)+'</span></div></div>'+
           '<div class="face back"><span class="ans-text">'+a[0]+'</span><span class="ans-pts">'+a[1]+'</span></div>'+
         '</div>';
       tile.addEventListener("click",()=>revealAnswer(i));
     } else {
+      // blank tile — same frame, no number
       tile.className="tile empty";
       tile.innerHTML='<div class="tile-inner"><div class="face front"></div></div>';
     }
@@ -615,9 +657,11 @@ function award(team){
   state[team].score += state.roundPoints;
   renderScores();
   sndFanfare();
-  // visual: zero out tally so it's clear points were banked
   state.roundPoints=0;
   $("roundTally").textContent=0;
+  // close panel, then advance to next round after a short pause so the fanfare plays
+  $("hostPanel").classList.remove("open");
+  setTimeout(()=>nextRound(), 1400);
 }
 
 /* ============================================================
@@ -665,6 +709,7 @@ function startGame(){
   document.body.classList.remove("hidden-board");
   $("startScreen").classList.remove("active");
   $("endScreen").classList.remove("active");
+  document.body.classList.remove("screen-open");
 }
 function endGame(){
   let winner;
@@ -675,6 +720,7 @@ function endGame(){
   $("endF1n").textContent=state.f1.name;$("endF1s").textContent=state.f1.score;
   $("endF2n").textContent=state.f2.name;$("endF2s").textContent=state.f2.score;
   $("endScreen").classList.add("active");
+  document.body.classList.add("screen-open");
   sndFanfare();
   launchConfetti();
 }
@@ -702,8 +748,9 @@ function launchConfetti(){
    WIRE UP EVENTS
    ============================================================ */
 buildDecor();
+document.body.classList.add("screen-open"); // start screen is open on page load
 $("playBtn").addEventListener("click",startGame);
-$("againBtn").addEventListener("click",()=>{ document.body.classList.add("hidden-board"); $("startScreen").classList.add("active"); $("endScreen").classList.remove("active"); });
+$("againBtn").addEventListener("click",()=>{ document.body.classList.add("hidden-board"); $("startScreen").classList.add("active"); $("endScreen").classList.remove("active"); document.body.classList.add("screen-open"); });
 
 $("gear").addEventListener("click",()=>$("hostPanel").classList.toggle("open"));
 $("hostClose").addEventListener("click",()=>$("hostPanel").classList.remove("open"));
