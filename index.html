@@ -414,8 +414,6 @@ body.screen-open .floor{opacity:0;}
   <div class="host-label">Award this round's points</div>
   <button class="btn f1" id="awardF1">AWARD → <span id="awF1n">FAMILY 1</span></button>
   <button class="btn f2" id="awardF2">AWARD → <span id="awF2n">FAMILY 2</span></button>
-  <div class="host-divider"></div>
-  <button class="btn next" id="nextBtn">➜ NEXT ROUND</button>
 </div>
 
 <!-- ===================== START SCREEN ===================== -->
@@ -448,28 +446,29 @@ const STRIKE_SRC = "data:audio/mpeg;base64,SUQzBAAAAAABAFRYWFgAAAASAAADbWFqb3JfY
    Rounds 1-9 → 5 answers. Round 10 (final) → 10 answers.
    ============================================================ */
 const QUESTIONS = [
-  { q:"Name something people do first thing in the morning",
-    answers:[["Check phone",40],["Make coffee",25],["Shower",18],["Brush teeth",11],["Stretch",6]] },
-  { q:"Name a food people eat with their hands",
-    answers:[["Pizza",35],["Burger",24],["Fries",18],["Chicken wings",14],["Tacos",9]] },
-  { q:"Name something you'd find in a kitchen",
-    answers:[["Refrigerator",33],["Stove",26],["Sink",19],["Microwave",14],["Toaster",8]] },
-  { q:"Name a reason you might be late for work",
-    answers:[["Traffic",38],["Overslept",27],["Bad weather",15],["Lost keys",12],["The kids",8]] },
-  { q:"Name an animal you might see at the zoo",
-    answers:[["Lion",32],["Elephant",25],["Monkey",20],["Giraffe",15],["Penguin",8]] },
-  { q:"Name something people lose all the time",
-    answers:[["Keys",36],["Phone",26],["Wallet",16],["TV remote",13],["Glasses",9]] },
-  { q:"Name a popular pizza topping",
-    answers:[["Pepperoni",40],["Extra cheese",22],["Mushroom",16],["Sausage",13],["Onion",9]] },
-  { q:"Name something people do at the beach",
-    answers:[["Swim",34],["Sunbathe",25],["Build sandcastle",19],["Surf",13],["Read a book",9]] },
-  { q:"Name a holiday people travel for",
-    answers:[["Christmas",38],["Thanksgiving",28],["New Year's",16],["Easter",10],["4th of July",8]] },
-  // FINAL ROUND — 10 answers
-  { q:"FINAL ROUND: Name something you'd find in a woman's purse",
-    answers:[["Wallet",20],["Keys",15],["Phone",13],["Lipstick",11],["Tissues",10],
-             ["Gum",9],["Pen",8],["Mints",7],["Sunglasses",4],["Receipts",3]] }
+  { q:"Name something Wagdi is known for",
+    answers:[["His intelligence / engineering",35],["Storytelling",24],["Traveling",18],["Sense of humour",14],["Being a great father/grandfather/friend",9]] },
+  { q:"Name something people admire about Wagdi",
+    answers:[["His career achievements",32],["Kindness/Generosity",25],["Wisdom",18],["Work ethic",15],["Personality",10]] },
+  { q:"Name places Wagdi loves to go",
+    answers:[["Airport to Travel",30],["Europe/Paris",26],["Costco",20],["Home",14],["Faculty Club",10]] },
+  { q:"Name the numerous names given to Wagdi",
+    answers:[["Fred",18],["Freddy",15],["Wag",13],["Dad",11],["Habibi",10],
+             ["Dr. Habashi",9],["Professor",8],["Geddo",7],["Big Boss",5],["Ya Faroud",4]] },
+  { q:"When Wagdi starts talking, he is usually sharing...",
+    answers:[["Advice",34],["A joke",25],["A life lesson",18],["\"Back in my day/When I was young…\"",14],["Something scientific",9]] },
+  { q:"Name something that never gets old about Wagdi",
+    answers:[["His humour",30],["His stories",24],["His Intellect",19],["His love for family",16],["His energy",11]] },
+  { q:"Name a gift Wagdi would actually enjoy",
+    answers:[["Books",33],["Travel-related gifts",25],["Time with family",18],["A nice meal at a restaurant",14],["Good cigars",10]] },
+  { q:"What sports does Wagdi love to watch/play/do",
+    answers:[["Soccer",35],["Tennis",24],["Biking",17],["Ping Pong",14],["Walking with Ghada",10]] },
+  { q:"Name a word Wagdi uses to describe something that makes him happy",
+    answers:[["Unbelievable",30],["Fantastic",24],["Super",20],["Amazing",15],["Phenomenal",11]] },
+  // FINAL ROUND
+  { q:"FINAL ROUND: Name something Wagdi may complain about often",
+    answers:[["Seating in restaurants",28],["Watered down drinks",22],["Cars parking beside yours in shopping malls",17],
+             ["Pool maintenance",14],["The stock market",11],["Trump",8]] }
 ];
 
 /* ============================================================
@@ -757,7 +756,6 @@ $("hostClose").addEventListener("click",()=>$("hostPanel").classList.remove("ope
 $("strikeZone").addEventListener("click",addStrike);   // click the ✗✗✗ under the board to strike
 $("awardF1").addEventListener("click",()=>award("f1"));
 $("awardF2").addEventListener("click",()=>award("f2"));
-$("nextBtn").addEventListener("click",nextRound);
 
 // host keyboard shortcuts (numbers reveal, S strike, N next)
 document.addEventListener("keydown",e=>{
