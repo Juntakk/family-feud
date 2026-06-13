@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wagdi's Family Feud — Host Answer Key</title>
+<style>
+  @page { size: letter; margin: 14mm 14mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    color: #15151f; margin: 0; font-size: 11.5px; line-height: 1.3;
+  }
+  h1 {
+    font-size: 22px; margin: 0 0 2px; color: #0b1b54; letter-spacing: .5px;
+  }
+  .sub { color: #555; font-size: 11px; margin: 0 0 10px; }
+  .legend {
+    background: #0b1b54; color: #fff; border-radius: 8px;
+    padding: 9px 12px; font-size: 11px; margin: 0 0 14px; line-height: 1.45;
+  }
+  .legend b { color: #ffcf4d; }
+  .grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 11px 16px;
+  }
+  .card {
+    border: 1.5px solid #cdd3e6; border-radius: 9px; overflow: hidden;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .card.wide { grid-column: 1 / -1; }
+  .card h2 {
+    font-size: 12px; margin: 0; padding: 7px 10px; background: #0b1b54; color: #fff;
+    display: flex; gap: 8px; align-items: baseline;
+  }
+  .card h2 .rnd { background: #ffcf4d; color: #0b1b54; font-weight: 800;
+    border-radius: 4px; padding: 1px 7px; font-size: 11px; white-space: nowrap; }
+  .card h2 .q { font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 4px 10px; border-top: 1px solid #e6e9f4; vertical-align: middle; }
+  tr:nth-child(even) td { background: #f6f8fe; }
+  .tile {
+    width: 26px; height: 26px; border-radius: 50%/50%;
+    background: #0b1b54; color: #fff; font-weight: 800; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid #ffcf4d;
+  }
+  td.tilecell { width: 34px; }
+  td.col { width: 56px; color: #888; font-size: 9.5px; text-transform: uppercase; letter-spacing: .5px; }
+  td.ans { font-weight: 600; }
+  td.pts { width: 42px; text-align: right; font-weight: 800; color: #0b1b54; }
+  /* two-column inner layout for the 10-answer round */
+  .card.wide table { width: 50%; float: left; }
+</style>
+</head>
+<body>
+<h1>WAGDI'S FAMILY FEUD — HOST ANSWER KEY</h1>
+<p class="sub">Backstage cheat sheet · which tile to reveal when a contestant answers</p>
+<div class="legend">
+  <b>How to reveal:</b> click the on-screen tile showing that number, or press the matching number key (press <b>0</b> for tile 10).<br>
+  <b>Board layout:</b> tiles <b>1–5</b> = LEFT column (top→bottom) · tiles <b>6–10</b> = RIGHT column (top→bottom). Higher points = listed first.
+</div>
+<div class="grid" id="grid"></div>
+
+<script>
+const QUESTIONS = [
+  { q:"Name something Wagdi is known for",
+    answers:[["His intelligence / engineering",35],["Storytelling",24],["Traveling",18],["Sense of humour",14],["Being a great father/grandfather/friend",9]] },
+  { q:"Name something people admire about Wagdi",
+    answers:[["His career achievements",32],["Kindness/Generosity",25],["Wisdom",18],["Work ethic",15],["Personality",10]] },
+  { q:"Name places Wagdi loves to go",
+    answers:[["Airport to Travel",30],["Europe/Paris",26],["Costco",20],["Home",14],["Faculty Club",10]] },
+  { q:"Name the numerous names given to Wagdi",
+    answers:[["Fred",18],["Freddy",15],["Wag",13],["Dad",11],["Habibi",10],
+             ["Dr. Habashi",9],["Professor",8],["Geddo",7],["Big Boss",5],["Ya Faroud",4]] },
+  { q:"When Wagdi starts talking, he is usually sharing...",
+    answers:[["Advice",34],["A joke",25],["A life lesson",18],["\"Back in my day/When I was young…\"",14],["Something scientific",9]] },
+  { q:"Name something that never gets old about Wagdi",
+    answers:[["His humour",30],["His stories",24],["His Intellect",19],["His love for family",16],["His energy",11]] },
+  { q:"Name a gift Wagdi would actually enjoy",
+    answers:[["Books",33],["Travel-related gifts",25],["Time with family",18],["A nice meal at a restaurant",14],["Good cigars",10]] },
+  { q:"What sports does Wagdi love to watch/play/do",
+    answers:[["Soccer",35],["Tennis",24],["Biking",17],["Ping Pong",14],["Walking with Ghada",10]] },
+  { q:"Name a word Wagdi uses to describe something that makes him happy",
+    answers:[["Unbelievable",30],["Fantastic",24],["Super",20],["Amazing",15],["Phenomenal",11]] },
+  { q:"FINAL ROUND: Name something Wagdi may complain about often",
+    answers:[["Seating in restaurants",28],["Watered down drinks",22],["Cars parking beside yours in shopping malls",17],
+             ["Pool maintenance",14],["The stock market",11],["Trump",8]] }
+];
+
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const colOf = i => i < 5 ? "Left "+(i+1) : "Right "+(i-4);
+const grid = document.getElementById("grid");
+
+QUESTIONS.forEach((item, r) => {
+  const wide = item.answers.length > 5;
+  const rows = item.answers.map((a, i) =>
+    '<tr>'+
+      '<td class="tilecell"><div class="tile">'+(i+1)+'</div></td>'+
+      '<td class="col">'+colOf(i)+'</td>'+
+      '<td class="ans">'+esc(a[0])+'</td>'+
+      '<td class="pts">'+a[1]+'</td>'+
+    '</tr>').join("");
+  const card = document.createElement("div");
+  card.className = "card" + (wide ? " wide" : "");
+  if (wide) {
+    const mid = Math.ceil(item.answers.length/2);
+    const mk = list => list.map(([i,a]) =>
+      '<tr>'+
+        '<td class="tilecell"><div class="tile">'+(i+1)+'</div></td>'+
+        '<td class="col">'+colOf(i)+'</td>'+
+        '<td class="ans">'+esc(a[0])+'</td>'+
+        '<td class="pts">'+a[1]+'</td>'+
+      '</tr>').join("");
+    const idx = item.answers.map((a,i)=>[i,a]);
+    card.innerHTML =
+      '<h2><span class="rnd">R'+(r+1)+'</span><span class="q">'+esc(item.q)+'</span></h2>'+
+      '<table>'+mk(idx.slice(0,mid))+'</table>'+
+      '<table>'+mk(idx.slice(mid))+'</table>'+
+      '<div style="clear:both"></div>';
+  } else {
+    card.innerHTML =
+      '<h2><span class="rnd">R'+(r+1)+'</span><span class="q">'+esc(item.q)+'</span></h2>'+
+      '<table>'+rows+'</table>';
+  }
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
