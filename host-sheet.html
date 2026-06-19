@@ -4,61 +4,46 @@
 <meta charset="utf-8">
 <title>Wagdi's Family Feud — Host Answer Key</title>
 <style>
-  @page { size: letter; margin: 14mm 14mm; }
+  @page { size: letter; margin: 9mm; }
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
     font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
-    color: #15151f; margin: 0; font-size: 11.5px; line-height: 1.3;
+    color: #15151f; margin: 0; font-size: 10px; line-height: 1.25;
   }
-  h1 {
-    font-size: 22px; margin: 0 0 2px; color: #0b1b54; letter-spacing: .5px;
+  h1 { font-size: 17px; margin: 0; color: #0b1b54; display: inline; }
+  .legend { color: #555; font-size: 9px; margin: 2px 0 6px; }
+  .legend b { color: #0b1b54; }
+
+  .grid { columns: 2; column-gap: 12px; }
+  .round { break-inside: avoid; -webkit-column-break-inside: avoid; margin-bottom: 5px; }
+  .round h2 {
+    font-size: 10.5px; margin: 0 0 2px; padding: 4px 8px;
+    background: #0b1b54; color: #fff; border-radius: 5px; line-height: 1.15;
   }
-  .sub { color: #555; font-size: 11px; margin: 0 0 10px; }
-  .legend {
-    background: #0b1b54; color: #fff; border-radius: 8px;
-    padding: 9px 12px; font-size: 11px; margin: 0 0 14px; line-height: 1.45;
+  .round h2 .n { color: #ffcf4d; font-weight: 800; margin-right: 5px; }
+
+  .row {
+    display: flex; align-items: center; gap: 9px;
+    padding: 1.5px 2px; border-bottom: 1px solid #eaedf6;
   }
-  .legend b { color: #ffcf4d; }
-  .grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 11px 16px;
-  }
-  .card {
-    border: 1.5px solid #cdd3e6; border-radius: 9px; overflow: hidden;
-    break-inside: avoid; page-break-inside: avoid;
-  }
-  .card.wide { grid-column: 1 / -1; }
-  .card h2 {
-    font-size: 12px; margin: 0; padding: 7px 10px; background: #0b1b54; color: #fff;
-    display: flex; gap: 8px; align-items: baseline;
-  }
-  .card h2 .rnd { background: #ffcf4d; color: #0b1b54; font-weight: 800;
-    border-radius: 4px; padding: 1px 7px; font-size: 11px; white-space: nowrap; }
-  .card h2 .q { font-weight: 600; }
-  table { width: 100%; border-collapse: collapse; }
-  td { padding: 4px 10px; border-top: 1px solid #e6e9f4; vertical-align: middle; }
-  tr:nth-child(even) td { background: #f6f8fe; }
   .tile {
-    width: 26px; height: 26px; border-radius: 50%/50%;
+    flex: 0 0 auto;
+    width: 24px; height: 24px; border-radius: 50%;
     background: #0b1b54; color: #fff; font-weight: 800; font-size: 13px;
     display: flex; align-items: center; justify-content: center;
-    border: 2px solid #ffcf4d;
   }
-  td.tilecell { width: 34px; }
-  td.col { width: 56px; color: #888; font-size: 9.5px; text-transform: uppercase; letter-spacing: .5px; }
-  td.ans { font-weight: 600; }
-  td.pts { width: 42px; text-align: right; font-weight: 800; color: #0b1b54; }
-  /* two-column inner layout for the 10-answer round */
-  .card.wide table { width: 50%; float: left; }
+  .ans { flex: 1 1 auto; font-size: 10.5px; }
+  .pts { flex: 0 0 auto; font-weight: 800; color: #0b1b54; font-size: 10.5px; }
 </style>
 </head>
 <body>
-<h1>WAGDI'S FAMILY FEUD — HOST ANSWER KEY</h1>
-<p class="sub">Backstage cheat sheet · which tile to reveal when a contestant answers</p>
-<div class="legend">
-  <b>How to reveal:</b> click the on-screen tile showing that number, or press the matching number key (press <b>0</b> for tile 10).<br>
-  <b>Board layout:</b> tiles <b>1–5</b> = LEFT column (top→bottom) · tiles <b>6–10</b> = RIGHT column (top→bottom). Higher points = listed first.
-</div>
-<div class="grid" id="grid"></div>
+<h1>Wagdi's Family Feud — Answer Key</h1>
+<p class="legend">
+  Find the answer, click the tile with that <b>number</b> (or press the number key — <b>0</b> for tile 10).
+  Tiles <b>1–5</b> = left column, <b>6–10</b> = right column. Top answer = most points.
+</p>
+<div class="grid" id="out"></div>
 
 <script>
 const QUESTIONS = [
@@ -87,41 +72,19 @@ const QUESTIONS = [
 ];
 
 const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-const colOf = i => i < 5 ? "Left "+(i+1) : "Right "+(i-4);
-const grid = document.getElementById("grid");
+const out = document.getElementById("out");
 
 QUESTIONS.forEach((item, r) => {
-  const wide = item.answers.length > 5;
   const rows = item.answers.map((a, i) =>
-    '<tr>'+
-      '<td class="tilecell"><div class="tile">'+(i+1)+'</div></td>'+
-      '<td class="col">'+colOf(i)+'</td>'+
-      '<td class="ans">'+esc(a[0])+'</td>'+
-      '<td class="pts">'+a[1]+'</td>'+
-    '</tr>').join("");
-  const card = document.createElement("div");
-  card.className = "card" + (wide ? " wide" : "");
-  if (wide) {
-    const mid = Math.ceil(item.answers.length/2);
-    const mk = list => list.map(([i,a]) =>
-      '<tr>'+
-        '<td class="tilecell"><div class="tile">'+(i+1)+'</div></td>'+
-        '<td class="col">'+colOf(i)+'</td>'+
-        '<td class="ans">'+esc(a[0])+'</td>'+
-        '<td class="pts">'+a[1]+'</td>'+
-      '</tr>').join("");
-    const idx = item.answers.map((a,i)=>[i,a]);
-    card.innerHTML =
-      '<h2><span class="rnd">R'+(r+1)+'</span><span class="q">'+esc(item.q)+'</span></h2>'+
-      '<table>'+mk(idx.slice(0,mid))+'</table>'+
-      '<table>'+mk(idx.slice(mid))+'</table>'+
-      '<div style="clear:both"></div>';
-  } else {
-    card.innerHTML =
-      '<h2><span class="rnd">R'+(r+1)+'</span><span class="q">'+esc(item.q)+'</span></h2>'+
-      '<table>'+rows+'</table>';
-  }
-  grid.appendChild(card);
+    '<div class="row">'+
+      '<div class="tile">'+(i+1)+'</div>'+
+      '<div class="ans">'+esc(a[0])+'</div>'+
+      '<div class="pts">'+a[1]+'</div>'+
+    '</div>').join("");
+  const div = document.createElement("div");
+  div.className = "round";
+  div.innerHTML = '<h2><span class="n">'+(r+1)+'.</span>'+esc(item.q)+'</h2>'+rows;
+  out.appendChild(div);
 });
 </script>
 </body>
