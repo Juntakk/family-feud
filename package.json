@@ -1,0 +1,24 @@
+{
+  "name": "family-feud",
+  "version": "1.0.0",
+  "description": "A fully self-contained Family Feud game built as a single HTML file — no build tools, no frameworks, no dependencies.",
+  "main": "index.html",
+  "scripts": {
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Juntakk/family-feud.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Juntakk/family-feud/issues"
+  },
+  "homepage": "https://github.com/Juntakk/family-feud#readme",
+  "devDependencies": {
+    "jsdom": "^29.1.1"
+  }
+}

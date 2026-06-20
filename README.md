@@ -47,6 +47,17 @@ Questions are defined in the `QUESTIONS` array at the top of the `<script>` tag 
 
 Each round's answer points should sum to 100. Rounds 1–9 take 5 answers; round 10 takes up to 10.
 
+## Tests
+
+A full game-flow test suite drives the real `index.html` (via jsdom) through every feature — start, reveal (click + keyboard), point tallying, strikes, awarding, round advancement, all 10 questions summing to 100, end-game/winner logic, and play-again.
+
+```bash
+npm install   # one-time: installs jsdom
+npm test
+```
+
+Tests live in `tests/` and use Node's built-in test runner (no extra framework).
+
 ## Tech
 
 - Vanilla HTML/CSS/JS — single file, zero dependencies
