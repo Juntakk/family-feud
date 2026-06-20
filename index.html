@@ -240,25 +240,27 @@ body{
 
 /* ============================== STRIKES ============================== */
 /* invisible clickable zone wrapping the 3 strikes — click anywhere to add a strike */
-.strike-zone{position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);
+.strike-zone{position:absolute;left:50%;bottom:1vh;transform:translateX(-50%);
   z-index:8;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:9px;
   padding:12px 36px;border-radius:16px;transition:background .2s;}
 .strike-zone:hover{background:rgba(255,60,60,0.08);}
 .strike-zone:active{background:rgba(255,60,60,0.16);}
 .strikes{display:flex;gap:18px;}
-.strike-slot{font-family:'Bebas Neue',sans-serif;font-size:46px;
-  width:60px;height:60px;display:flex;align-items:center;justify-content:center;
-  border:3px solid #2a3360;border-radius:10px;color:#3a4470;background:#070b22;
+.strike-slot{font-size:74px;
+  width:82px;height:84px;display:flex;align-items:center;justify-content:center;
   transition:.25s;}
-.strike-slot.on{color:#ff2b2b;border-color:#ff2b2b;
-  text-shadow:0 0 18px #ff2b2b;box-shadow:0 0 22px #ff2b2b88;}
+.strike-slot .ff-x{opacity:.4;transition:.25s;}
+.strike-slot.on .ff-x{opacity:1;}
+
+/* Family-Feud strike X — uses the official red-X card image */
+.ff-x{display:inline-block;width:1em;height:1.03em;
+  background:url("images-removebg-preview.png") center/contain no-repeat;}
 
 /* giant strike overlay */
 #bigStrike{position:fixed;inset:0;z-index:60;display:none;
   align-items:center;justify-content:center;gap:5vh;pointer-events:none;}
 #bigStrike.show{display:flex;animation:strikeAnim 1.5s ease-out forwards;}
-#bigStrike .x{font-family:'Bebas Neue',sans-serif;color:#ff1a1a;
-  line-height:1;text-shadow:0 0 60px #ff0000,0 0 120px #ff0000;}
+#bigStrike .ff-x{filter:drop-shadow(0 0 .8rem rgba(255,40,40,.55));}
 @keyframes strikeAnim{
   0%{opacity:0;transform:scale(.2);}
   15%{opacity:1;transform:scale(1.15);}
@@ -391,9 +393,9 @@ body.screen-open .floor{opacity:0;}
 
     <div class="strike-zone" id="strikeZone" title="Click to add a strike">
       <div class="strikes" id="strikes">
-        <div class="strike-slot">✗</div>
-        <div class="strike-slot">✗</div>
-        <div class="strike-slot">✗</div>
+        <div class="strike-slot"><span class="ff-x"></span></div>
+        <div class="strike-slot"><span class="ff-x"></span></div>
+        <div class="strike-slot"><span class="ff-x"></span></div>
       </div>
     </div>
   </div>
@@ -629,9 +631,8 @@ function showBigStrike(n){
   const size = n===1 ? 46 : n===2 ? 34 : 26;   // vh — shrink so they fit in a row
   for(let i=0;i<n;i++){
     const x=document.createElement("div");
-    x.className="x";
+    x.className="ff-x";
     x.style.fontSize=size+"vh";
-    x.textContent="✗";
     bs.appendChild(x);
   }
   // retrigger animation
